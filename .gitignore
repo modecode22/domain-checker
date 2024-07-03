@@ -1,1 +1,6 @@
 node_modules
+
+available_domains.json
+filtered_domains.json
+
+available.md
