@@ -35,7 +35,7 @@ Replace `path/to/lazy-domain-checker` with the actual path where you cloned or d
 Now that you're in the right spot, let's make some magic happen!
 
 ```bash
-npm start
+pnpm start
 ```
 
 This will compile the TypeScript and run the script. Magic! ✨
