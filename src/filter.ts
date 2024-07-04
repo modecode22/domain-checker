@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-const filePath: string = path.join(__dirname, 'available_domains.json');
-const outputPath: string = path.join(__dirname, 'filtered_domains.json');
+const filePath: string = path.join(__dirname, 'results/available_domains.json');
+const outputPath: string = path.join(__dirname, 'results/filtered_domains.json');
 const file: string = fs.readFileSync(filePath, 'utf8');
 const domains: string[] = JSON.parse(file);
 
