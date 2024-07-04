@@ -1,17 +1,24 @@
-const net = require('net');
-const fs = require('fs');
+import * as net from 'net';
+import * as fs from 'fs';
+import { domainNames } from './data';
 
-function delay(ms) {
+function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function checkDomain(domain, retries = 3) {
+interface DomainResult {
+  domain: string;
+  available: boolean;
+  error?: string;
+}
+
+async function checkDomain(domain: string, retries: number = 3): Promise<DomainResult> {
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
-      return await new Promise((resolve, reject) => {
+      return await new Promise<DomainResult>((resolve, reject) => {
         const whoisServer = 'whois.verisign-grs.com';
         const port = 43;
-        const timeout = 2000; // 3 seconds timeout
+        const timeout = 2000; // 2 seconds timeout
 
         const client = net.createConnection(port, whoisServer, () => {
           client.write(`${domain}\r\n`);
@@ -41,26 +48,28 @@ async function checkDomain(domain, retries = 3) {
           client.end();
         });
       });
-    } catch (error) {
+    } catch (error:any) {
       if (attempt === retries - 1) {
-        console.error(`Error checking domain ${domain}:`, error.message);
+        console.error(`Error checking domain ${domain}:`, error?.message );
         return { domain, available: false, error: error.message };
       }
       await delay(1000 * (attempt + 1)); // Exponential backoff
     }
   }
+  // This line is added to satisfy TypeScript, it should never be reached due to the loop above
+  return { domain, available: false, error: 'Max retries reached' };
 }
 
-function parseWhoisResponse(response, domain) {
+function parseWhoisResponse(response: string, domain: string): boolean {
   const noMatch = response.toLowerCase().includes('no match');
   return noMatch;
 }
 
-async function checkDomains(names) {
+async function checkDomains(domainNames: string[]): Promise<string[]> {
   const domainExtensions = ['.com', '.net'];
-  const results = [];
+  const results: DomainResult[] = [];
 
-  for (const name of names) {
+  for (const name of domainNames) {
     for (const extension of domainExtensions) {
       const domain = `${name}${extension}`;
       results.push(await checkDomain(domain));
@@ -71,17 +80,15 @@ async function checkDomains(names) {
   return results.filter(result => result.available).map(result => result.domain);
 }
 
-async function main() {
-  const names = ['coooler', 'findeeer']  // Change this to your list of names
-
+async function main(): Promise<void> {
   const chunkSize = 20; // Reduced chunk size
-  let allAvailableDomains = [];
+  let allAvailableDomains: string[] = [];
 
   console.log('Starting domain availability check...');
 
-  for (let i = 0; i < names.length; i += chunkSize) {
-    const chunk = names.slice(i, i + chunkSize);
-    console.log(`Checking domains for names ${i + 1} to ${Math.min(i + chunkSize, names.length)}...`);
+  for (let i = 0; i < domainNames.length; i += chunkSize) {
+    const chunk = domainNames.slice(i, i + chunkSize);
+    console.log(`Checking domains for domainNames ${i + 1} to ${Math.min(i + chunkSize, domainNames.length)}...`);
     
     try {
       const availableDomains = await checkDomains(chunk);

@@ -1,6 +1,11 @@
+# node_modules
 node_modules
 
+
+# output files
 available_domains.json
 filtered_domains.json
 
-available.md
+
+# pnpm
+pnpm-lock.yaml

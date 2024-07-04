@@ -1,13 +1,18 @@
-const whois = require('whois');
-const fs = require('fs').promises;
+import * as whois from 'whois';
+import * as fs from 'fs/promises';
 
-function delay(ms) {
+function delay(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function checkDomain(domain) {
+interface DomainResult {
+  domain: string;
+  available: boolean;
+}
+
+function checkDomain(domain: string): Promise<DomainResult> {
   return new Promise((resolve, reject) => {
-    whois.lookup(domain, (err, data) => {
+    whois.lookup(domain, (err: Error | null, data: string) => {
       if (err) {
         reject(err);
       } else {
@@ -18,9 +23,9 @@ function checkDomain(domain) {
   });
 }
 
-async function checkDomains(names) {
+async function checkDomains(names: string[]): Promise<string[]> {
   const domainExtensions = ['.com', '.net'];
-  const results = [];
+  const results: DomainResult[] = [];
 
   for (const name of names) {
     for (const extension of domainExtensions) {
@@ -30,20 +35,20 @@ async function checkDomains(names) {
         results.push(result);
         console.log(`Checked ${domain}: ${result.available ? 'Available ✔️' : 'Not available ❌'}`);
       } catch (error) {
-        console.error(`Error checking ${domain}:`, error.message);
+        console.error(`Error checking ${domain}:`, (error as Error).message);
       }
-      await delay(1000); // 3 second delay between each check
+      await delay(1000); // 1 second delay between each check
     }
   }
 
   return results.filter(result => result.available).map(result => result.domain);
 }
 
-async function main() {
+async function main(): Promise<void> {
   const names = ['booooolean', 'striiing'];  // Change this to your list of names
 
   const chunkSize = 20; // Reduced chunk size
-  let allAvailableDomains = [];
+  let allAvailableDomains: string[] = [];
 
   console.log('Starting domain availability check...');
 
@@ -66,8 +71,8 @@ async function main() {
     await fs.writeFile('available_domains.json', JSON.stringify(allAvailableDomains, null, 2));
     console.log('Available domains have been written to available_domains.json');
   } catch (err) {
-    console.error('Error writing to file:', err);
+    console.error('Error writing to file:', (err as Error).message);
   }
 }
 
-main().catch(console.error);
+main().catch(err => console.error('Unhandled error:', (err as Error).message));
