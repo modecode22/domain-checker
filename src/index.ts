@@ -109,7 +109,7 @@ async function main(): Promise<void> {
   console.log(`Total available domains found: ${allAvailableDomains.length}`);
 
   // Write the results to a JSON file
-  fs.writeFile('available_domains.json', JSON.stringify(allAvailableDomains, null, 2), (err) => {
+  fs.writeFile('src/results/available_domains.json', JSON.stringify(allAvailableDomains, null, 2), (err) => {
     if (err) {
       console.error('Error writing to file:', err);
     } else {

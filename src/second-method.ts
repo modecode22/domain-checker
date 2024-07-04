@@ -68,7 +68,7 @@ async function main(): Promise<void> {
 
   // Write the results to a JSON file
   try {
-    await fs.writeFile('available_domains.json', JSON.stringify(allAvailableDomains, null, 2));
+    await fs.writeFile('src/results/available_domains.json', JSON.stringify(allAvailableDomains, null, 2));
     console.log('Available domains have been written to available_domains.json');
   } catch (err) {
     console.error('Error writing to file:', (err as Error).message);
