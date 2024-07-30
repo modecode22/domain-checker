@@ -14,8 +14,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "commander": "^12.1.0",
     "net": "^1.0.2",
-    "whois": "^2.14.2"
+    "node-cache": "^5.1.2",
+    "p-limit": "^6.1.0",
+    "whois": "^2.14.2",
+    "winston": "^3.13.1"
   },
   "devDependencies": {
     "@types/node": "^20.14.9",

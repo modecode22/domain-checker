@@ -5,7 +5,14 @@ node_modules
 # output files
 available_domains.json
 filtered_domains.json
-
+output.json
 
 # pnpm
 pnpm-lock.yaml
+
+# logs
+error.log
+combined.log
+
+# dist folder
+dist

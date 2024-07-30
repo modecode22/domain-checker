@@ -1,1 +1,1 @@
-export const domainNames = ["arabiccccc", "baco", "cade", "deft"]; // put your 10,000 domain names here
+export const domainNames = []; // put your 10,000 domain names here
